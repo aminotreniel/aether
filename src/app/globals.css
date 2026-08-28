@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #050506;
+  --color-surface: #0b0b0f;
+  --color-line: #1b1b22;
+  --color-cream: #f2f0ea;
+  --color-muted: #83838d;
+  --color-lime: #d8ff3e;
+  --color-iris: #7b5cff;
+  --color-flame: #ff6b3d;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), Georgia, "Times New Roman", serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-cream);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-lime);
+  color: #000;
+}
+
+::-webkit-scrollbar { width: 9px; }
+::-webkit-scrollbar-track { background: var(--color-ink); }
+::-webkit-scrollbar-thumb { background: #24242c; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #33333d; }
+
+/* ---------- typography helpers ---------- */
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+}
+
+.mono-label {
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- film grain ---------- */
+
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: -200%;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 6s steps(6) infinite;
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  17% { transform: translate(-3%, -2%); }
+  33% { transform: translate(2%, -4%); }
+  50% { transform: translate(-1%, 3%); }
+  67% { transform: translate(3%, 1%); }
+  83% { transform: translate(-2%, 2%); }
+}
+
+/* ---------- marquee ---------- */
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--duration, 40s) linear infinite;
+}
+.marquee-track[data-reverse="true"] { animation-direction: reverse; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ---------- grid backdrop ---------- */
+
+.grid-lines {
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 90% 60% at 50% 40%, #000 30%, transparent 78%);
+}
+
+/* ---------- spotlight card ---------- */
+
+.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 400ms var(--ease-out-expo);
+  background: radial-gradient(
+    360px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(216, 255, 62, 0.09),
+    transparent 62%
+  );
+  z-index: -1;
+}
+.spotlight:hover::before { opacity: 1; }
+
+.spotlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  opacity: 0;
+  transition: opacity 400ms var(--ease-out-expo);
+  background: radial-gradient(
+    260px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(216, 255, 62, 0.5),
+    transparent 60%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.spotlight:hover::after { opacity: 1; }
+
+/* ---------- misc ---------- */
+
+.no-cursor, .no-cursor * { cursor: none; }
+
+.text-balance { text-wrap: balance; }
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track, .grain::after { animation: none !important; }
+}
