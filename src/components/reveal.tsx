@@ -1,8 +1,10 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion, type Variants } from "motion/react";
 
-/** Words rise out of a clipping mask, staggered. */
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+/** Words rise out of a clipping mask, staggered from a single parent. */
 export function MaskText({
   text,
   className,
@@ -19,30 +21,38 @@ export function MaskText({
   const reduce = useReducedMotion();
   const words = text.split(" ");
 
+  const container: Variants = {
+    hidden: {},
+    show: {
+      transition: { staggerChildren: stagger, delayChildren: delay },
+    },
+  };
+
+  const child: Variants = {
+    hidden: { y: reduce ? 0 : "110%" },
+    show: { y: 0, transition: { duration: 0.9, ease: EASE } },
+  };
+
   return (
-    <span className={className}>
+    <motion.span
+      className={className}
+      variants={container}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once, margin: "-8%" }}
+    >
       {words.map((word, i) => (
         <span
           key={`${word}-${i}`}
-          className="inline-block overflow-hidden align-bottom pb-[0.12em]"
+          className="inline-block overflow-hidden align-bottom pb-[0.14em]"
         >
-          <motion.span
-            className="inline-block"
-            initial={reduce ? { y: 0 } : { y: "110%" }}
-            whileInView={{ y: 0 }}
-            viewport={{ once, margin: "-10%" }}
-            transition={{
-              duration: 0.9,
-              delay: delay + i * stagger,
-              ease: [0.16, 1, 0.3, 1],
-            }}
-          >
+          <motion.span variants={child} className="inline-block">
             {word}
             {i < words.length - 1 ? " " : ""}
           </motion.span>
         </span>
       ))}
-    </span>
+    </motion.span>
   );
 }
 
@@ -65,7 +75,7 @@ export function Rise({
       initial={reduce ? { opacity: 1 } : { opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-12%" }}
-      transition={{ duration: 0.85, delay, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.85, delay, ease: EASE }}
     >
       {children}
     </motion.div>

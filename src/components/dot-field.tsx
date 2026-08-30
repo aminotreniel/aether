@@ -73,7 +73,7 @@ export default function DotField({ className }: { className?: string }) {
         const dy = d.oy - eased.y;
         const dist = Math.hypot(dx, dy);
 
-        let alpha = 0.06;
+        let alpha = 0.085;
         let size = 1;
         let tx = d.ox;
         let ty = d.oy;
@@ -84,7 +84,7 @@ export default function DotField({ className }: { className?: string }) {
           const angle = Math.atan2(dy, dx);
           tx = d.ox - Math.cos(angle) * pull;
           ty = d.oy - Math.sin(angle) * pull;
-          alpha = 0.06 + f * 0.68;
+          alpha = 0.085 + f * 0.66;
           size = 1 + f * 1.5;
         }
 

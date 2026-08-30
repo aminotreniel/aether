@@ -33,7 +33,7 @@ export default function Manifesto() {
   const words = COPY.split(" ");
 
   return (
-    <section id="approach" className="mx-auto max-w-[1400px] px-6 py-28 md:px-10 md:py-44">
+    <section id="approach" className="scroll-mt-24 mx-auto max-w-[1400px] px-6 py-28 md:px-10 md:py-44">
       <div className="mb-14 flex items-center gap-4">
         <span className="mono-label">01 — Manifesto</span>
         <span className="h-px flex-1 bg-line" />

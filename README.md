@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Aether — interactive UI showcase
 
-## Getting Started
+A Next.js landing page built as a design-craft showcase: motion, scroll
+choreography and interactive components, no images anywhere (every visual is
+CSS, SVG or canvas).
 
-First, run the development server:
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev      # http://localhost:3000
+npm run build    # production build
+npm start        # serve the production build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Next.js 16 (App Router, Turbopack) + React 19 + TypeScript
+- Tailwind CSS v4 (tokens live in `src/app/globals.css` under `@theme`)
+- `motion` (Framer Motion) for all animation
+- `lenis` for smooth scrolling
+- `lucide-react` for icons
+- Fonts: Inter + Instrument Serif via `next/font`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## What's interactive
 
-## Learn More
+| Component | What it does |
+|---|---|
+| `cursor.tsx` | Custom cursor — springy ring + fast dot, blend-mode difference, grows and shows a label over anything with `data-cursor="…"` |
+| `dot-field.tsx` | Canvas dot grid in the hero that leans away from the pointer and brightens with proximity (single rAF loop) |
+| `smooth-scroll.tsx` | Lenis smooth scroll + eased anchor jumps |
+| `scroll-progress.tsx` | Gradient progress bar bound to scroll |
+| `magnetic.tsx` | Buttons that pull toward the cursor |
+| `hero.tsx` | Masked line reveals, pointer-parallax gradient orbs, scroll-linked fade/scale/blur |
+| `manifesto.tsx` | Word-by-word opacity reveal driven by scroll position |
+| `features.tsx` | Live easing lab (segmented control with a shared-layout pill, animated cubic-bézier curve, replayable demo), expanding token swatches, working toggle + slider, animated Lighthouse ring |
+| `spotlight-card.tsx` | Radial spotlight + gradient border that track the cursor; optional 3D tilt |
+| `showcase.tsx` | Pinned horizontal scroll through project cards, each with a CSS-only UI mockup |
+| `stats.tsx` | Count-up numbers on a single shared in-view observer |
+| `faq.tsx` | Height-animated accordion |
+| `cta-footer.tsx` | Masked headline reveal, live Manila clock, oversized wordmark |
 
-To learn more about Next.js, take a look at the following resources:
+## Design tokens
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Edit `@theme` in `src/app/globals.css` to reskin the whole site:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+--color-ink      #050506   page background
+--color-surface  #0b0b0f   cards
+--color-line     #1b1b22   hairlines
+--color-cream    #f2f0ea   text
+--color-muted    #83838d   secondary text
+--color-lime     #d8ff3e   accent
+--color-iris     #7b5cff   secondary accent
+--color-flame    #ff6b3d   tertiary accent
+```
 
-## Deploy on Vercel
+## Notes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Everything respects `prefers-reduced-motion`.
+- Animations that stagger a list are driven by one parent observer rather than
+  one observer per child — per-child `whileInView` intermittently skipped the
+  first item.
+- No `<img>` tags: the project mockups, charts and textures are all markup.

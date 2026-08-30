@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { Check, Layers, Sparkles, Gauge, Palette } from "lucide-react";
 import SpotlightCard from "./spotlight-card";
 import { Rise, MaskText } from "./reveal";
@@ -16,6 +16,10 @@ function EasingLab() {
   const [index, setIndex] = useState(0);
   const [run, setRun] = useState(0);
   const easing = EASINGS[index];
+  const [x1, y1, x2, y2] = easing.value;
+  const curvePath = `M0,100 C${x1 * 100},${100 - y1 * 100} ${x2 * 100},${
+    100 - y2 * 100
+  } 100,0`;
 
   return (
     <div className="flex h-full flex-col justify-between gap-8">
@@ -31,6 +35,47 @@ function EasingLab() {
           Every easing in the system is tuned against real content. Tap a curve
           and watch the difference.
         </p>
+      </div>
+
+      <div className="relative mx-auto my-2 w-44">
+        <svg viewBox="0 0 100 100" className="h-44 w-44">
+          <defs>
+            <linearGradient id="curveGrad" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0%" stopColor="#7b5cff" />
+              <stop offset="100%" stopColor="#d8ff3e" />
+            </linearGradient>
+          </defs>
+          {[0, 25, 50, 75, 100].map((g) => (
+            <g key={g}>
+              <line x1={g} y1="0" x2={g} y2="100" stroke="#15151b" strokeWidth="0.5" />
+              <line x1="0" y1={g} x2="100" y2={g} stroke="#15151b" strokeWidth="0.5" />
+            </g>
+          ))}
+          <line
+            x1="0" y1="100" x2="100" y2="0"
+            stroke="#1b1b22" strokeWidth="0.6" strokeDasharray="2 3"
+          />
+          <motion.path
+            fill="none"
+            stroke="url(#curveGrad)"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            animate={{ d: curvePath }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          />
+          <motion.circle
+            r="2.4"
+            fill="#d8ff3e"
+            animate={{ cx: easing.value[0] * 100, cy: 100 - easing.value[1] * 100 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          />
+          <motion.circle
+            r="2.4"
+            fill="#7b5cff"
+            animate={{ cx: easing.value[2] * 100, cy: 100 - easing.value[3] * 100 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          />
+        </svg>
       </div>
 
       <div>
@@ -195,26 +240,18 @@ function ControlsCard() {
 }
 
 function PerfCard() {
-  const [hover, setHover] = useState(false);
   const score = 99;
   const circumference = 2 * Math.PI * 42;
+  const metrics = [
+    { k: "LCP", v: "0.9s", note: "good < 2.5s" },
+    { k: "CLS", v: "0.00", note: "good < 0.1" },
+    { k: "INP", v: "42ms", note: "good < 200ms" },
+  ];
 
   return (
-    <div
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      className="flex h-full flex-col justify-between gap-8"
-    >
-      <div>
-        <div className="mb-4 flex items-center gap-2 text-muted">
-          <Gauge size={15} />
-          <span className="mono-label">Performance</span>
-        </div>
-        <h3 className="text-xl tracking-[-0.02em]">Fast is a feature</h3>
-      </div>
-
-      <div className="flex items-end justify-between">
-        <div className="relative h-28 w-28">
+    <div className="flex flex-col gap-10 md:flex-row md:items-center md:justify-between">
+      <div className="flex items-center gap-7">
+        <div className="relative h-28 w-28 shrink-0">
           <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
             <circle cx="50" cy="50" r="42" fill="none" stroke="#1b1b22" strokeWidth="4" />
             <motion.circle
@@ -227,9 +264,7 @@ function PerfCard() {
               strokeLinecap="round"
               strokeDasharray={circumference}
               initial={{ strokeDashoffset: circumference }}
-              whileInView={{
-                strokeDashoffset: circumference * (1 - score / 100),
-              }}
+              whileInView={{ strokeDashoffset: circumference * (1 - score / 100) }}
               viewport={{ once: true }}
               transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
             />
@@ -238,30 +273,47 @@ function PerfCard() {
             <span className="display text-3xl">{score}</span>
           </div>
         </div>
-        <AnimatePresence>
-          {hover ? (
-            <motion.ul
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 10 }}
-              className="space-y-1.5 text-right"
-            >
-              {["LCP 0.9s", "CLS 0.00", "INP 42ms"].map((m) => (
-                <li key={m} className="font-mono text-[11px] text-muted">
-                  {m}
-                </li>
-              ))}
-            </motion.ul>
-          ) : null}
-        </AnimatePresence>
+        <div>
+          <div className="mb-3 flex items-center gap-2 text-muted">
+            <Gauge size={15} />
+            <span className="mono-label">Performance</span>
+          </div>
+          <h3 className="text-xl tracking-[-0.02em]">Fast is a feature</h3>
+          <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted">
+            Median field data across the last twelve products we shipped.
+          </p>
+        </div>
       </div>
+
+      <motion.div
+        className="grid w-full grid-cols-3 gap-3 md:w-auto md:min-w-[26rem]"
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true }}
+        variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08, delayChildren: 0.15 } } }}
+      >
+        {metrics.map((m) => (
+          <motion.div
+            key={m.k}
+            variants={{
+              hidden: { opacity: 0, y: 14 },
+              show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } },
+            }}
+            className="rounded-2xl border border-line bg-ink/50 p-4"
+          >
+            <div className="mono-label">{m.k}</div>
+            <div className="mt-2 font-mono text-lg text-cream">{m.v}</div>
+            <div className="mt-1 text-[10px] text-muted/70">{m.note}</div>
+          </motion.div>
+        ))}
+      </motion.div>
     </div>
   );
 }
 
 export default function Features() {
   return (
-    <section id="studio" className="mx-auto max-w-[1400px] px-6 pb-28 md:px-10 md:pb-40">
+    <section id="studio" className="scroll-mt-24 mx-auto max-w-[1400px] px-6 pb-24 md:px-10 md:pb-28">
       <div className="mb-14 flex items-center gap-4">
         <span className="mono-label">02 — Capabilities</span>
         <span className="h-px flex-1 bg-line" />
