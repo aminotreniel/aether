@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import Magnetic from "./magnetic";
 import { MaskText } from "./reveal";
+import Waitlist from "./waitlist";
 
 function ManilaClock() {
   const [time, setTime] = useState("--:--:--");
@@ -70,6 +71,8 @@ export default function CtaFooter() {
             </a>
           </Magnetic>
         </div>
+
+        <Waitlist />
 
         {/* giant wordmark */}
         <div className="relative mt-24 overflow-hidden">

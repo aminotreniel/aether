@@ -2,13 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useInView, useReducedMotion } from "motion/react";
-
-const STATS = [
-  { value: 47, label: "Products shipped" },
-  { value: 12, label: "Years of practice" },
-  { value: 99, label: "Median Lighthouse" },
-  { value: 4, label: "People, on purpose" },
-];
+import { useContent } from "@/components/content-provider";
 
 function Counter({ to, run }: { to: number; run: boolean }) {
   const reduce = useReducedMotion();
@@ -36,6 +30,7 @@ function Counter({ to, run }: { to: number; run: boolean }) {
 }
 
 export default function Stats() {
+  const { stats: STATS } = useContent();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.25 });
 

@@ -1,17 +1,8 @@
 "use client";
-
-const ITEMS = [
-  "Product design",
-  "Design systems",
-  "Motion",
-  "Prototyping",
-  "Front-end",
-  "Brand",
-  "Accessibility",
-  "Design engineering",
-];
+import { useContent } from "@/components/content-provider";
 
 export default function Marquee() {
+  const { marquee: ITEMS } = useContent();
   const row = [...ITEMS, ...ITEMS];
 
   return (

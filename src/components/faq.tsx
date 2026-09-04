@@ -3,27 +3,10 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Plus } from "lucide-react";
-
-const ITEMS = [
-  {
-    q: "How do you actually work?",
-    a: "One team, one thread. We embed with your product people for a fixed window — usually six to ten weeks — and ship real interfaces, not slide decks. You get the Figma file and the front-end code.",
-  },
-  {
-    q: "Design or engineering?",
-    a: "Both, by the same hands. The person choosing the easing curve is the person writing it. That is the whole reason the studio exists.",
-  },
-  {
-    q: "What does an engagement cost?",
-    a: "Projects start at a fixed fee for a defined scope. We will give you a number in the first call, not after three rounds of discovery.",
-  },
-  {
-    q: "Can you work with our design system?",
-    a: "Yes — and we will leave it in better shape than we found it. If you don't have one, we can build the first version alongside the product work.",
-  },
-];
+import { useContent } from "@/components/content-provider";
 
 export default function Faq() {
+  const { faq: ITEMS } = useContent();
   const [open, setOpen] = useState<number | null>(0);
 
   return (

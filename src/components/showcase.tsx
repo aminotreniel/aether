@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
+import { useContent } from "@/components/content-provider";
 
 type Project = {
   id: string;
@@ -12,41 +13,6 @@ type Project = {
   accent: string;
   blurb: string;
 };
-
-const PROJECTS: Project[] = [
-  {
-    id: "01",
-    name: "Halcyon",
-    kind: "Fintech dashboard",
-    year: "2026",
-    accent: "#d8ff3e",
-    blurb: "A trading console that stays calm when the market doesn't.",
-  },
-  {
-    id: "02",
-    name: "Fieldnote",
-    kind: "Research tool",
-    year: "2025",
-    accent: "#7b5cff",
-    blurb: "Notes, transcripts and tags in one continuous canvas.",
-  },
-  {
-    id: "03",
-    name: "Ember",
-    kind: "Health platform",
-    year: "2025",
-    accent: "#ff6b3d",
-    blurb: "Clinical data made legible for the people who aren't clinicians.",
-  },
-  {
-    id: "04",
-    name: "Northwind",
-    kind: "Logistics OS",
-    year: "2024",
-    accent: "#5ad1c4",
-    blurb: "Fleet telemetry at a glance, down to the pallet.",
-  },
-];
 
 /** Abstract CSS-only interface mock — no images, all layout. */
 function Mock({ accent }: { accent: string }) {
@@ -160,6 +126,7 @@ function Card({ project }: { project: Project }) {
 }
 
 export default function Showcase() {
+  const { projects: PROJECTS } = useContent();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref });
   const x = useTransform(scrollYProgress, [0, 1], ["2%", "-72%"]);

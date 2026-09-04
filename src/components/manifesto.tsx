@@ -2,9 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform, MotionValue } from "motion/react";
-
-const COPY =
-  "Most software is functional and forgettable. We are after the other thing — the moment a product answers you so smoothly that you stop noticing the interface at all. That takes taste, restraint, and an unreasonable amount of attention to the last five percent.";
+import { useContent } from "@/components/content-provider";
 
 function Word({
   word,
@@ -24,6 +22,7 @@ function Word({
 }
 
 export default function Manifesto() {
+  const { manifesto: COPY } = useContent();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
